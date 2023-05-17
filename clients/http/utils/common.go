@@ -96,13 +96,10 @@ func createRequest(ctx context.Context, httpMethod string, baseUrl string, reque
 	if requestParams != nil {
 		u.RawQuery = requestParams.Encode()
 	}
-	fmt.Println("zitified Query1 to: " + u.String())
 	req, err := http.NewRequest(httpMethod, u.String(), nil) //xxxxziti
 	if err != nil {
-		fmt.Println("zitified Query1 DID ERROR")
 		return nil, errors.NewCommonEdgeX(errors.KindServerError, "failed to create a http request", err)
 	}
-	fmt.Println("zitified Query1 had no error")
 
 	req.Header.Set(common.CorrelationHeader, correlatedId(ctx))
 	return req, nil
@@ -126,7 +123,6 @@ func createRequestWithRawDataAndParams(ctx context.Context, httpMethod string, b
 		content = common.ContentTypeJSON
 	}
 
-	fmt.Println("zitified Query2 to: " + u.String())
 	req, err := http.NewRequest(httpMethod, u.String(), bytes.NewReader(jsonEncodedData))
 	if err != nil {
 		return nil, errors.NewCommonEdgeX(errors.KindServerError, "failed to create a http request", err)
@@ -155,7 +151,6 @@ func createRequestWithRawData(ctx context.Context, httpMethod string, baseUrl st
 		content = common.ContentTypeJSON
 	}
 
-	fmt.Println("zitified Query3 to: " + u.String())
 	req, err := http.NewRequest(httpMethod, u.String(), bytes.NewReader(jsonEncodedData))
 	if err != nil {
 		return nil, errors.NewCommonEdgeX(errors.KindServerError, "failed to create a http request", err)
@@ -176,7 +171,6 @@ func createRequestWithEncodedData(ctx context.Context, httpMethod string, baseUr
 		content = FromContext(ctx, common.ContentType)
 	}
 
-	fmt.Println("zitified Query4 to: " + u.String())
 	req, err := http.NewRequest(httpMethod, u.String(), bytes.NewReader(data))
 	if err != nil {
 		return nil, errors.NewCommonEdgeX(errors.KindServerError, "failed to create a http request", err)
@@ -210,7 +204,6 @@ func createRequestFromFilePath(ctx context.Context, httpMethod string, baseUrl s
 	}
 	writer.Close()
 
-	fmt.Println("zitified Query5 to: " + u.String())
 	req, err := http.NewRequest(httpMethod, u.String(), body)
 	if err != nil {
 		return nil, errors.NewCommonEdgeX(errors.KindServerError, "failed to create a http request", err)
