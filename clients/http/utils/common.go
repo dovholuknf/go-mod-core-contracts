@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -24,6 +25,8 @@ import (
 	"github.com/edgexfoundry/go-mod-core-contracts/v3/errors"
 
 	"github.com/google/uuid"
+
+	"github.com/openziti/sdk-golang/ziti"
 )
 
 // FromContext allows for the retrieval of the specified key's value from the supplied Context.
@@ -55,6 +58,10 @@ func getBody(resp *http.Response) ([]byte, errors.EdgeX) {
 	return body, nil
 }
 
+type ZitiDialContext struct {
+	context ziti.Context
+}
+
 // Helper method to make the request and return the response
 func makeRequest(req *http.Request, authInjector interfaces.AuthenticationInjector) (*http.Response, errors.EdgeX) {
 	if authInjector != nil {
@@ -63,7 +70,14 @@ func makeRequest(req *http.Request, authInjector interfaces.AuthenticationInject
 		}
 	}
 
-	client := &http.Client{}
+	zitiTransport := http.DefaultTransport.(*http.Transport).Clone() // copy default transport
+	zitiTransport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
+		dialer := ziti.NewDialerWithFallback(ctx, nil)
+		return dialer.Dial(network, addr)
+	}
+	zitiTransport.TLSClientConfig.InsecureSkipVerify = true
+	client := &http.Client{Transport: zitiTransport}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.NewCommonEdgeX(errors.KindServiceUnavailable, "failed to send a http request", err)
