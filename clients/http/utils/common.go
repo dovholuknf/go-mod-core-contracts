@@ -26,15 +26,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type Client struct {
-	addr      string
-	transport http.RoundTripper
-}
-
-var (
-	clientsMapping map[string]Client
-)
-
 // FromContext allows for the retrieval of the specified key's value from the supplied Context.
 // If the value is not found, an empty string is returned.
 func FromContext(ctx context.Context, key string) string {
