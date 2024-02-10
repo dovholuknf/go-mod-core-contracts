@@ -27,4 +27,4 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 )
 
-replace github.com/edgexfoundry/go-mod-bootstrap/v3 => github.com/dovholuknf/go-mod-bootstrap/v3 v3.0.0-20240201185813-2ccf2b8516a0
+replace github.com/edgexfoundry/go-mod-bootstrap/v3 => github.com/dovholuknf/go-mod-bootstrap/v3 v3.0.0-20240207152706-4e9bafdaa7ef
