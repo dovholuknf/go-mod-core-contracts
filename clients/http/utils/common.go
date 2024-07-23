@@ -61,9 +61,12 @@ func makeRequest(req *http.Request, authInjector interfaces.AuthenticationInject
 		if err := authInjector.AddAuthenticationData(req); err != nil {
 			return nil, errors.NewCommonEdgeXWrapper(err)
 		}
+	} else {
+		return nil, errors.NewCommonEdgeXWrapper(errors.NewCommonEdgeX(errors.KindServerError, "authInject is null", nil))
 	}
 
-	client := &http.Client{Transport: authInjector.RoundTripper()}
+	defaultTransport, _ := authInjector.RoundTripperWithFallback()
+	client := &http.Client{Transport: defaultTransport}
 
 	resp, err := client.Do(req)
 	if err != nil {
